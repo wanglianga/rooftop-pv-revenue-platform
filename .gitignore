@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+target/
+*.class
+*.jar
+*.war
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+
+# Local environment
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.properties
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# QA and browser artifacts
+playwright-report/
+test-results/
+coverage/
+screenshots/
+traces/
+*.trace.zip
