@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="pv-string-list">
     <el-card>
       <template #header>
@@ -101,7 +101,7 @@ const pagination = reactive({
 
 const fetchRoofAreas = async () => {
   try {
-    const res = await request.get('/roof/area/list', { params: { pageNum: 1, pageSize: 100 } })
+    const res = await request.get('/roof-areas', { params: { pageNum: 1, pageSize: 100 } })
     roofAreas.value = res.data.list
   } catch (error) {
     ElMessage.error('获取屋面区域失败')
@@ -110,7 +110,7 @@ const fetchRoofAreas = async () => {
 
 const fetchInverters = async () => {
   try {
-    const res = await request.get('/inverter/list', { params: { pageNum: 1, pageSize: 100 } })
+    const res = await request.get('/inverters', { params: { pageNum: 1, pageSize: 100 } })
     inverters.value = res.data.list
   } catch (error) {
     ElMessage.error('获取逆变器列表失败')
@@ -120,7 +120,7 @@ const fetchInverters = async () => {
 const fetchList = async () => {
   loading.value = true
   try {
-    const res = await request.get('/pv/string/list', {
+    const res = await request.get('/pv-strings', {
       params: {
         ...searchForm,
         pageNum: pagination.pageNum,
@@ -168,7 +168,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.delete(`/pv/string/${row.id}`)
+    await request.delete(`/pv-strings/${row.id}`)
     ElMessage.success('删除成功')
     fetchList()
   } catch (error) {

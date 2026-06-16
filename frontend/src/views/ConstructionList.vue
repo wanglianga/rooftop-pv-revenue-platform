@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="construction-list">
     <el-card>
       <template #header>
@@ -112,7 +112,7 @@ const pagination = reactive({
 
 const fetchRoofAreas = async () => {
   try {
-    const res = await request.get('/roof/area/list', { params: { pageNum: 1, pageSize: 100 } })
+    const res = await request.get('/roof-areas', { params: { pageNum: 1, pageSize: 100 } })
     roofAreas.value = res.data.list
   } catch (error) {
     ElMessage.error('获取屋面区域失败')
@@ -132,7 +132,7 @@ const fetchList = async () => {
       params.endDate = searchForm.dateRange[1]
     }
     delete params.dateRange
-    const res = await request.get('/construction/list', { params })
+    const res = await request.get('/construction-records', { params })
     tableData.value = res.data.list
     pagination.total = res.data.total
   } catch (error) {
@@ -174,7 +174,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.delete(`/construction/${row.id}`)
+    await request.delete(`/construction-records/${row.id}`)
     ElMessage.success('删除成功')
     fetchList()
   } catch (error) {

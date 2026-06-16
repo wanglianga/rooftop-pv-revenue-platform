@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="vote-topic-list">
     <el-card>
       <template #header>
@@ -93,7 +93,7 @@ const pagination = reactive({
 const fetchList = async () => {
   loading.value = true
   try {
-    const res = await request.get('/vote/topic/list', {
+    const res = await request.get('/vote-topics', {
       params: {
         ...searchForm,
         pageNum: pagination.pageNum,
@@ -139,7 +139,7 @@ const handlePublish = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.put(`/vote/topic/publish/${row.id}`)
+    await request.put(`/vote-topics/${row.id}/publish`)
     ElMessage.success('发布成功')
     fetchList()
   } catch (error) {
@@ -156,7 +156,7 @@ const handleClose = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.put(`/vote/topic/close/${row.id}`)
+    await request.put(`/vote-topics/${row.id}/close`)
     ElMessage.success('关闭成功')
     fetchList()
   } catch (error) {
@@ -173,7 +173,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.delete(`/vote/topic/${row.id}`)
+    await request.delete(`/vote-topics/${row.id}`)
     ElMessage.success('删除成功')
     fetchList()
   } catch (error) {

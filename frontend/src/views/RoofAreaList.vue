@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="roof-area-list">
     <el-card>
       <template #header>
@@ -97,7 +97,7 @@ const pagination = reactive({
 const fetchList = async () => {
   loading.value = true
   try {
-    const res = await request.get('/roof/area/list', {
+    const res = await request.get('/roof-areas', {
       params: {
         ...searchForm,
         pageNum: pagination.pageNum,
@@ -144,7 +144,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.delete(`/roof/area/${row.id}`)
+    await request.delete(`/roof-areas/${row.id}`)
     ElMessage.success('删除成功')
     fetchList()
   } catch (error) {

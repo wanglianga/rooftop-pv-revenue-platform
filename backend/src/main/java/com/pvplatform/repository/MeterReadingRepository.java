@@ -10,6 +10,6 @@ import java.util.List;
 public interface MeterReadingRepository extends JpaRepository<MeterReading, Long> {
     List<MeterReading> findByInverterId(Long inverterId);
 
-    @Query("SELECT m FROM MeterReading m WHERE YEAR(m.readingDate) = :year AND MONTH(m.readingDate) = :month")
+    @Query("SELECT m FROM MeterReading m WHERE FUNCTION('YEAR', m.readingDate) = :year AND FUNCTION('MONTH', m.readingDate) = :month")
     List<MeterReading> findByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);
 }

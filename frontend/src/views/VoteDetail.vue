@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="vote-detail">
     <el-card>
       <template #header>
@@ -156,7 +156,7 @@ const initChart = () => {
 const fetchDetail = async (id) => {
   loading.value = true
   try {
-    const res = await request.get(`/vote/topic/${id}`)
+    const res = await request.get(`/vote-topics/${id}`)
     Object.assign(detail, res.data)
   } catch (error) {
     ElMessage.error('获取详情失败')
@@ -167,7 +167,7 @@ const fetchDetail = async (id) => {
 
 const fetchVoteStats = async (id) => {
   try {
-    const res = await request.get(`/vote/topic/${id}/stats`)
+    const res = await request.get(`/vote-records/result/${id}`)
     Object.assign(voteStats, res.data)
     await nextTick()
     initChart()
@@ -178,8 +178,9 @@ const fetchVoteStats = async (id) => {
 
 const fetchVoteRecords = async () => {
   try {
-    const res = await request.get(`/vote/topic/${route.params.id}/records`, {
+    const res = await request.get(`/vote-records`, {
       params: {
+        topicId: route.params.id,
         pageNum: pagination.pageNum,
         pageSize: pagination.pageSize
       }

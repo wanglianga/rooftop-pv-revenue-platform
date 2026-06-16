@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="owner-notice-form">
     <el-card>
       <template #header>
@@ -140,7 +140,7 @@ const rules = {
 
 const fetchDetail = async (id) => {
   try {
-    const res = await request.get(`/owner/notice/${id}`)
+    const res = await request.get(`/owner-notices/${id}`)
     Object.assign(form, res.data)
   } catch (error) {
     ElMessage.error('获取详情失败')
@@ -155,10 +155,10 @@ const handleSubmit = async () => {
       try {
         const data = { ...form, status: 'published' }
         if (isEdit.value) {
-          await request.put(`/owner/notice/${form.id}`, data)
+          await request.put(`/owner-notices`, data)
           ElMessage.success('编辑成功')
         } else {
-          await request.post('/owner/notice', data)
+          await request.post('/owner-notices', data)
           ElMessage.success('发布成功')
         }
         router.push('/owner-notice')
@@ -179,10 +179,10 @@ const handleSaveDraft = async () => {
       try {
         const data = { ...form, status: 'draft' }
         if (isEdit.value) {
-          await request.put(`/owner/notice/${form.id}`, data)
+          await request.put(`/owner-notices`, data)
           ElMessage.success('保存成功')
         } else {
-          await request.post('/owner/notice', data)
+          await request.post('/owner-notices', data)
           ElMessage.success('保存草稿成功')
         }
         router.push('/owner-notice')

@@ -11,6 +11,6 @@ import java.util.List;
 public interface WarrantyRepository extends JpaRepository<Warranty, Long> {
     List<Warranty> findByDeviceTypeAndDeviceId(String deviceType, Long deviceId);
 
-    @Query("SELECT w FROM Warranty w WHERE w.expireDate BETWEEN :today AND :expireDate")
+    @Query("SELECT w FROM Warranty w WHERE w.warrantyEnd BETWEEN :today AND :expireDate")
     List<Warranty> findExpiringWarranties(@Param("today") Date today, @Param("expireDate") Date expireDate);
 }

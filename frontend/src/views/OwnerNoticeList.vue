@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="owner-notice-list">
     <el-card>
       <template #header>
@@ -121,7 +121,7 @@ const fetchList = async () => {
       params.endTime = searchForm.dateRange[1]
     }
     delete params.dateRange
-    const res = await request.get('/owner/notice/list', { params })
+    const res = await request.get('/owner-notices', { params })
     tableData.value = res.data.list
     pagination.total = res.data.total
   } catch (error) {
@@ -163,7 +163,7 @@ const handlePublish = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.put(`/owner/notice/publish/${row.id}`)
+    await request.put(`/owner-notices`, { ...row, status: 'published' })
     ElMessage.success('发布成功')
     fetchList()
   } catch (error) {
@@ -180,7 +180,7 @@ const handleWithdraw = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.put(`/owner/notice/withdraw/${row.id}`)
+    await request.put(`/owner-notices`, { ...row, status: 'withdrawn' })
     ElMessage.success('撤回成功')
     fetchList()
   } catch (error) {
@@ -197,7 +197,7 @@ const handleDelete = async (row) => {
       cancelButtonText: '取消',
       type: 'warning'
     })
-    await request.delete(`/owner/notice/${row.id}`)
+    await request.delete(`/owner-notices/${row.id}`)
     ElMessage.success('删除成功')
     fetchList()
   } catch (error) {

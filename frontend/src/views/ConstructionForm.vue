@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="construction-form">
     <el-card>
       <template #header>
@@ -161,7 +161,7 @@ const fetchRoofAreas = async () => {
 
 const fetchDetail = async (id) => {
   try {
-    const res = await request.get(`/construction/${id}`)
+    const res = await request.get(`/construction-records/${id}`)
     Object.assign(form, res.data)
   } catch (error) {
     ElMessage.error('获取详情失败')
@@ -175,10 +175,10 @@ const handleSubmit = async () => {
       submitting.value = true
       try {
         if (isEdit.value) {
-          await request.put(`/construction/${form.id}`, form)
+          await request.put(`/construction-records`, form)
           ElMessage.success('编辑成功')
         } else {
-          await request.post('/construction', form)
+          await request.post('/construction-records', form)
           ElMessage.success('创建成功')
         }
         router.push('/construction')

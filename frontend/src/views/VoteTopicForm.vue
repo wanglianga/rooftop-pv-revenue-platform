@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿<template>
   <div class="vote-topic-form">
     <el-card>
       <template #header>
@@ -119,7 +119,7 @@ const disabledDate = (time) => {
 
 const fetchDetail = async (id) => {
   try {
-    const res = await request.get(`/vote/topic/${id}`)
+    const res = await request.get(`/vote-topics/${id}`)
     Object.assign(form, res.data)
   } catch (error) {
     ElMessage.error('获取详情失败')
@@ -133,10 +133,10 @@ const handleSubmit = async () => {
       submitting.value = true
       try {
         if (isEdit.value) {
-          await request.put(`/vote/topic/${form.id}`, form)
+          await request.put(`/vote-topics`, form)
           ElMessage.success('编辑成功')
         } else {
-          await request.post('/vote/topic', form)
+          await request.post('/vote-topics', form)
           ElMessage.success('创建成功')
         }
         router.push('/vote-topic')

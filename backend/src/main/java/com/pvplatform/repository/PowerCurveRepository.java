@@ -9,6 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface PowerCurveRepository extends JpaRepository<PowerCurve, Long> {
-    @Query("SELECT p FROM PowerCurve p WHERE p.inverterId = :inverterId AND DATE(p.recordTime) = DATE(:date)")
+    @Query("SELECT p FROM PowerCurve p WHERE p.inverterId = :inverterId AND FUNCTION('DATE', p.recordTime) = FUNCTION('DATE', :date)")
     List<PowerCurve> findByInverterIdAndDate(@Param("inverterId") Long inverterId, @Param("date") Date date);
 }
