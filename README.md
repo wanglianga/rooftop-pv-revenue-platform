@@ -234,7 +234,7 @@ CREATE DATABASE pv_platform DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_genera
 - `listNotices()`: 获取所有告知
 - `listByTargetAudience(audience)`: 按受众查询告知
 
-### 13. ConstructionRecordService - 施工记录服务
+### 14. ConstructionRecordService - 施工记录服务
 - `listByRoofAreaId(roofAreaId)`: 按屋面区域查询施工记录
 - `saveRecord(record)`: 保存施工记录
 - `listByStage(stage)`: 按施工阶段查询记录

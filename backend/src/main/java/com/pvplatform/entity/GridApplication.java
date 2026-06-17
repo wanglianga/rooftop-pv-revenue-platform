@@ -1,6 +1,6 @@
 package com.pvplatform.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -38,12 +38,47 @@ public class GridApplication {
     @Column(name = "feedback_time")
     private Date feedbackTime;
 
+    @Column(name = "return_reason")
+    private String returnReason;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "return_time")
+    private Date returnTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "resubmit_time")
+    private Date resubmitTime;
+
     @Column(name = "create_by")
     private Long createBy;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time")
     private Date createTime;
+
+    public String getReturnReason() {
+        return returnReason;
+    }
+
+    public void setReturnReason(String returnReason) {
+        this.returnReason = returnReason;
+    }
+
+    public Date getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(Date returnTime) {
+        this.returnTime = returnTime;
+    }
+
+    public Date getResubmitTime() {
+        return resubmitTime;
+    }
+
+    public void setResubmitTime(Date resubmitTime) {
+        this.resubmitTime = resubmitTime;
+    }
 
     public Long getId() {
         return id;

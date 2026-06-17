@@ -29,6 +29,18 @@
           <el-icon><Tools /></el-icon>
           <span>施工记录管理</span>
         </el-menu-item>
+        <el-menu-item index="/grid-application">
+          <el-icon><Connection /></el-icon>
+          <span>并网申请管理</span>
+        </el-menu-item>
+        <el-menu-item index="/inverter-anomaly">
+          <el-icon><Warning /></el-icon>
+          <span>逆变器异常追踪</span>
+        </el-menu-item>
+        <el-menu-item index="/revenue-allocation">
+          <el-icon><Money /></el-icon>
+          <span>收益分配管理</span>
+        </el-menu-item>
         <el-menu-item index="/owner-notice">
           <el-icon><Bell /></el-icon>
           <span>业主公告管理</span>

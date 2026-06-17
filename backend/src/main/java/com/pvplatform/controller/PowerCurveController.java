@@ -34,4 +34,12 @@ public class PowerCurveController {
             @RequestParam String date) {
         return powerCurveService.getDailyCurve(inverterId, date);
     }
+
+    @GetMapping("/compare")
+    public Result<Map<String, Object>> compareCurves(
+            @RequestParam Long inverterId,
+            @RequestParam String beforeDate,
+            @RequestParam String afterDate) {
+        return powerCurveService.compareCurves(inverterId, beforeDate, afterDate);
+    }
 }

@@ -42,6 +42,21 @@ public class RevenueAllocation {
     @Column(name = "status")
     private Integer status;
 
+    @Column(name = "delayed_flag")
+    private Integer delayedFlag;
+
+    @Column(name = "delayed_reason")
+    private String delayedReason;
+
+    @Column(name = "delayed_amount")
+    private Double delayedAmount;
+
+    @Column(name = "affected_dates")
+    private String affectedDates;
+
+    @Column(name = "anomaly_id")
+    private Long anomalyId;
+
     @Column(name = "create_by")
     private Long createBy;
 
@@ -135,6 +150,46 @@ public class RevenueAllocation {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getDelayedFlag() {
+        return delayedFlag;
+    }
+
+    public void setDelayedFlag(Integer delayedFlag) {
+        this.delayedFlag = delayedFlag;
+    }
+
+    public String getDelayedReason() {
+        return delayedReason;
+    }
+
+    public void setDelayedReason(String delayedReason) {
+        this.delayedReason = delayedReason;
+    }
+
+    public Double getDelayedAmount() {
+        return delayedAmount;
+    }
+
+    public void setDelayedAmount(Double delayedAmount) {
+        this.delayedAmount = delayedAmount;
+    }
+
+    public String getAffectedDates() {
+        return affectedDates;
+    }
+
+    public void setAffectedDates(String affectedDates) {
+        this.affectedDates = affectedDates;
+    }
+
+    public Long getAnomalyId() {
+        return anomalyId;
+    }
+
+    public void setAnomalyId(Long anomalyId) {
+        this.anomalyId = anomalyId;
     }
 
     public Long getCreateBy() {

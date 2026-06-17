@@ -59,4 +59,31 @@ public class GridApplicationService {
     public GridApplication getApplicationById(Long id) {
         return gridApplicationRepository.findById(id).orElse(null);
     }
+
+    public GridApplication returnApplication(Long id, String returnReason) {
+        Optional<GridApplication> optional = gridApplicationRepository.findById(id);
+        if (optional.isPresent()) {
+            GridApplication application = optional.get();
+            application.setStatus("RETURNED");
+            application.setReturnReason(returnReason);
+            application.setReturnTime(new Date());
+            return gridApplicationRepository.save(application);
+        }
+        return null;
+    }
+
+    public GridApplication resubmitApplication(Long id) {
+        Optional<GridApplication> optional = gridApplicationRepository.findById(id);
+        if (optional.isPresent()) {
+            GridApplication application = optional.get();
+            application.setStatus("PENDING");
+            application.setResubmitTime(new Date());
+            return gridApplicationRepository.save(application);
+        }
+        return null;
+    }
+
+    public List<GridApplication> listAll() {
+        return gridApplicationRepository.findAll();
+    }
 }

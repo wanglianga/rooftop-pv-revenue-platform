@@ -18,12 +18,19 @@ public class GridApplicationController {
 
     @GetMapping
     public Result<List<GridApplication>> list(@RequestParam(required = false) String status) {
-        return Result.success(gridApplicationService.listByStatus(status));
+        if (status != null && !status.isEmpty()) {
+            return Result.success(gridApplicationService.listByStatus(status));
+        }
+        return Result.success(gridApplicationService.listAll());
     }
 
     @GetMapping("/{id}")
     public Result<GridApplication> getById(@PathVariable Long id) {
-        return Result.success(gridApplicationService.getApplicationById(id));
+        GridApplication app = gridApplicationService.getApplicationById(id);
+        if (app == null) {
+            return Result.error("并网申请不存在");
+        }
+        return Result.success(app);
     }
 
     @PostMapping
@@ -43,5 +50,24 @@ public class GridApplicationController {
     public Result<GridApplication> setGridNo(@PathVariable Long id, @RequestBody Map<String, String> params) {
         String gridNo = params.get("gridNo");
         return Result.success(gridApplicationService.setGridNo(id, gridNo));
+    }
+
+    @PutMapping("/{id}/return")
+    public Result<GridApplication> returnApplication(@PathVariable Long id, @RequestBody Map<String, String> params) {
+        String returnReason = params.get("returnReason");
+        GridApplication result = gridApplicationService.returnApplication(id, returnReason);
+        if (result == null) {
+            return Result.error("并网申请不存在");
+        }
+        return Result.success(result);
+    }
+
+    @PutMapping("/{id}/resubmit")
+    public Result<GridApplication> resubmitApplication(@PathVariable Long id) {
+        GridApplication result = gridApplicationService.resubmitApplication(id);
+        if (result == null) {
+            return Result.error("并网申请不存在");
+        }
+        return Result.success(result);
     }
 }

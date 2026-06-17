@@ -62,4 +62,71 @@ public class PowerCurveServiceImpl implements PowerCurveService {
 
         return Result.success(dailyData);
     }
+
+    @Override
+    public Result<Map<String, Object>> compareCurves(Long inverterId, String beforeDate, String afterDate) {
+        try {
+            Date before = DATE_FORMAT.parse(beforeDate);
+            Date after = DATE_FORMAT.parse(afterDate);
+
+            List<PowerCurve> beforeCurves = powerCurveRepository.findByInverterIdAndDate(inverterId, before);
+            List<PowerCurve> afterCurves = powerCurveRepository.findByInverterIdAndDate(inverterId, after);
+
+            List<Map<String, Object>> beforeData = new ArrayList<>();
+            for (PowerCurve curve : beforeCurves) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("time", curve.getRecordTime());
+                item.put("power", curve.getPower());
+                item.put("voltage", curve.getVoltage());
+                item.put("current", curve.getCurrent());
+                item.put("temperature", curve.getTemperature());
+                beforeData.add(item);
+            }
+
+            List<Map<String, Object>> afterData = new ArrayList<>();
+            for (PowerCurve curve : afterCurves) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("time", curve.getRecordTime());
+                item.put("power", curve.getPower());
+                item.put("voltage", curve.getVoltage());
+                item.put("current", curve.getCurrent());
+                item.put("temperature", curve.getTemperature());
+                afterData.add(item);
+            }
+
+            double beforeAvgPower = beforeCurves.stream()
+                    .mapToDouble(PowerCurve::getPower)
+                    .average()
+                    .orElse(0.0);
+            double afterAvgPower = afterCurves.stream()
+                    .mapToDouble(PowerCurve::getPower)
+                    .average()
+                    .orElse(0.0);
+
+            double beforeMaxPower = beforeCurves.stream()
+                    .mapToDouble(PowerCurve::getPower)
+                    .max()
+                    .orElse(0.0);
+            double afterMaxPower = afterCurves.stream()
+                    .mapToDouble(PowerCurve::getPower)
+                    .max()
+                    .orElse(0.0);
+
+            Map<String, Object> comparison = new HashMap<>();
+            comparison.put("beforeDate", beforeDate);
+            comparison.put("afterDate", afterDate);
+            comparison.put("inverterId", inverterId);
+            comparison.put("beforeData", beforeData);
+            comparison.put("afterData", afterData);
+            comparison.put("beforeAvgPower", beforeAvgPower);
+            comparison.put("afterAvgPower", afterAvgPower);
+            comparison.put("beforeMaxPower", beforeMaxPower);
+            comparison.put("afterMaxPower", afterMaxPower);
+            comparison.put("powerRecoveryRate", beforeAvgPower > 0 ? (afterAvgPower / beforeAvgPower) * 100 : 0);
+
+            return Result.success(comparison);
+        } catch (ParseException e) {
+            return Result.error("日期格式错误，请使用 yyyy-MM-dd 格式");
+        }
+    }
 }

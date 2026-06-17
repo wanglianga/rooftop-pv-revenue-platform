@@ -56,6 +56,54 @@ const routes = [
         meta: { title: '编辑施工记录', icon: 'Edit', hidden: true }
       },
       {
+        path: 'grid-application',
+        name: 'GridApplication',
+        component: () => import('@/views/GridApplicationList.vue'),
+        meta: { title: '并网申请管理', icon: 'Connection' }
+      },
+      {
+        path: 'grid-rectification',
+        name: 'GridRectification',
+        component: () => import('@/views/GridRectificationList.vue'),
+        meta: { title: '整改记录', icon: 'Document', hidden: true }
+      },
+      {
+        path: 'grid-rectification/create',
+        name: 'GridRectificationCreate',
+        component: () => import('@/views/GridRectificationForm.vue'),
+        meta: { title: '提交整改', icon: 'Plus', hidden: true }
+      },
+      {
+        path: 'inverter-anomaly',
+        name: 'InverterAnomaly',
+        component: () => import('@/views/InverterAnomalyList.vue'),
+        meta: { title: '逆变器异常追踪', icon: 'Warning' }
+      },
+      {
+        path: 'inverter-anomaly/create',
+        name: 'InverterAnomalyCreate',
+        component: () => import('@/views/InverterAnomalyForm.vue'),
+        meta: { title: '记录异常', icon: 'Plus', hidden: true }
+      },
+      {
+        path: 'inverter-anomaly/edit/:id',
+        name: 'InverterAnomalyEdit',
+        component: () => import('@/views/InverterAnomalyForm.vue'),
+        meta: { title: '编辑异常', icon: 'Edit', hidden: true }
+      },
+      {
+        path: 'inverter-anomaly/:id',
+        name: 'InverterAnomalyDetail',
+        component: () => import('@/views/InverterAnomalyDetail.vue'),
+        meta: { title: '异常详情', icon: 'Document', hidden: true }
+      },
+      {
+        path: 'revenue-allocation',
+        name: 'RevenueAllocation',
+        component: () => import('@/views/RevenueAllocationList.vue'),
+        meta: { title: '收益分配管理', icon: 'Money' }
+      },
+      {
         path: 'owner-notice',
         name: 'OwnerNotice',
         component: () => import('@/views/OwnerNoticeList.vue'),

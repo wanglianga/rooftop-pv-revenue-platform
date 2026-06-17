@@ -10,4 +10,5 @@ public interface PowerCurveService {
     Result<List<PowerCurve>> listByInverterIdAndDate(Long inverterId, String date);
     Result<PowerCurve> savePowerCurve(PowerCurve powerCurve);
     Result<List<Map<String, Object>>> getDailyCurve(Long inverterId, String date);
+    Result<Map<String, Object>> compareCurves(Long inverterId, String beforeDate, String afterDate);
 }

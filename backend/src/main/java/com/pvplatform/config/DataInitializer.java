@@ -53,6 +53,12 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private WarrantyRepository warrantyRepository;
 
+    @Autowired
+    private GridRectificationRepository gridRectificationRepository;
+
+    @Autowired
+    private InverterAnomalyRepository inverterAnomalyRepository;
+
     @Override
     public void run(String... args) {
         if (sysUserRepository.count() == 0) {
@@ -93,6 +99,12 @@ public class DataInitializer implements CommandLineRunner {
         }
         if (warrantyRepository.count() == 0) {
             initWarranties();
+        }
+        if (gridRectificationRepository.count() == 0) {
+            initGridRectifications();
+        }
+        if (inverterAnomalyRepository.count() == 0) {
+            initInverterAnomalies();
         }
     }
 
@@ -477,5 +489,94 @@ public class DataInitializer implements CommandLineRunner {
         w3.setCreateBy(1L);
         w3.setCreateTime(now);
         warrantyRepository.save(w3);
+    }
+
+    private void initGridRectifications() {
+        Date now = new Date();
+
+        GridRectification r1 = new GridRectification();
+        r1.setGridApplicationId(2L);
+        r1.setRectificationType("接线图补充");
+        r1.setDescription("补充3号楼屋顶光伏接线图，更新电气系统单线图");
+        r1.setPhotos("");
+        r1.setFileVersion("V2.1");
+        r1.setRetestResult("复测通过，接线图与现场一致");
+        r1.setSubmitter("李施工队");
+        r1.setSubmitTime(addDays(now, -5));
+        r1.setStatus("APPROVED");
+        r1.setCreateBy(1L);
+        r1.setCreateTime(now);
+        gridRectificationRepository.save(r1);
+
+        GridRectification r2 = new GridRectification();
+        r2.setGridApplicationId(2L);
+        r2.setRectificationType("保护装置完善");
+        r2.setDescription("增加防孤岛保护装置，完善继电保护方案");
+        r2.setPhotos("");
+        r2.setFileVersion("V3.0");
+        r2.setRetestResult("保护装置动作测试正常");
+        r2.setSubmitter("赵电工");
+        r2.setSubmitTime(addDays(now, -3));
+        r2.setStatus("SUBMITTED");
+        r2.setCreateBy(1L);
+        r2.setCreateTime(now);
+        gridRectificationRepository.save(r2);
+    }
+
+    private void initInverterAnomalies() {
+        Date now = new Date();
+
+        InverterAnomaly a1 = new InverterAnomaly();
+        a1.setInverterId(3L);
+        a1.setAnomalyType("OFFLINE");
+        a1.setDescription("INV-003逆变器通讯中断，疑似通讯模块故障");
+        a1.setDiscoveryTime(addDays(now, -10));
+        a1.setAffectedPvStrings("STR-003,STR-008");
+        a1.setAffectedBuilding("3号楼");
+        a1.setDowntimeHours(48.0);
+        a1.setTroubleshootProcess("1.检查通讯线缆连接 2.更换通讯模块 3.重新配置IP地址 4.测试通讯恢复正常");
+        a1.setRepairTime(addDays(now, -8));
+        a1.setRepairResult("更换通讯模块后恢复正常，已连续运行48小时无异常");
+        a1.setAffectedDates(addDays(now, -10) + "至" + addDays(now, -8));
+        a1.setBeforeCurveDate("2026-06-05");
+        a1.setAfterCurveDate("2026-06-09");
+        a1.setCurveComparisonResult("修复后日平均功率恢复至故障前95%以上，发电曲线正常");
+        a1.setStatus("RESOLVED");
+        a1.setOperator("刘运维");
+        a1.setCreateBy(1L);
+        a1.setCreateTime(now);
+        inverterAnomalyRepository.save(a1);
+
+        InverterAnomaly a2 = new InverterAnomaly();
+        a2.setInverterId(1L);
+        a2.setAnomalyType("POWER_DROP");
+        a2.setDescription("INV-001发电量突降30%，疑似组件遮挡或MPPT异常");
+        a2.setDiscoveryTime(addDays(now, -2));
+        a2.setAffectedPvStrings("STR-001,STR-006");
+        a2.setAffectedBuilding("1号楼");
+        a2.setDowntimeHours(0.0);
+        a2.setTroubleshootProcess("1.现场检查发现1号楼东侧新搭建脚手架造成遮挡 2.协调物业拆除脚手架 3.检查MPPT跟踪状态");
+        a2.setAffectedDates(addDays(now, -2) + "至今");
+        a2.setStatus("OPEN");
+        a2.setOperator("王运维");
+        a2.setCreateBy(1L);
+        a2.setCreateTime(now);
+        inverterAnomalyRepository.save(a2);
+
+        InverterAnomaly a3 = new InverterAnomaly();
+        a3.setInverterId(5L);
+        a3.setAnomalyType("SHADING_INCREASE");
+        a3.setDescription("INV-005所在区域遮挡明显增多，发电效率下降");
+        a3.setDiscoveryTime(addDays(now, -5));
+        a3.setAffectedPvStrings("STR-005,STR-010");
+        a3.setAffectedBuilding("5号楼");
+        a3.setDowntimeHours(0.0);
+        a3.setTroubleshootProcess("1.检查5号楼B区屋顶周边树木生长情况 2.确认树木遮挡影响范围 3.已通知物业进行修剪");
+        a3.setAffectedDates(addDays(now, -5) + "至今");
+        a3.setStatus("IN_PROGRESS");
+        a3.setOperator("陈运维");
+        a3.setCreateBy(1L);
+        a3.setCreateTime(now);
+        inverterAnomalyRepository.save(a3);
     }
 }

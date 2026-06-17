@@ -19,13 +19,16 @@ public class RevenueAllocationController {
     @GetMapping
     public Result<List<RevenueAllocation>> list(
             @RequestParam(required = false) String period,
-            @RequestParam(required = false) Long ownerId) {
-        if (period != null) {
+            @RequestParam(required = false) Long ownerId,
+            @RequestParam(required = false) Integer delayedFlag) {
+        if (delayedFlag != null) {
+            return Result.success(revenueAllocationService.listDelayed());
+        } else if (period != null) {
             return Result.success(revenueAllocationService.listByPeriod(period));
         } else if (ownerId != null) {
             return Result.success(revenueAllocationService.listByOwnerId(ownerId));
         }
-        return Result.error("请提供 period 或 ownerId 参数");
+        return Result.success(revenueAllocationService.listAll());
     }
 
     @PostMapping("/calculate")
@@ -38,5 +41,34 @@ public class RevenueAllocationController {
     @PostMapping
     public Result<RevenueAllocation> save(@RequestBody RevenueAllocation revenueAllocation) {
         return Result.success(revenueAllocationService.saveAllocation(revenueAllocation));
+    }
+
+    @PutMapping("/{id}/mark-delayed")
+    public Result<RevenueAllocation> markDelayed(@PathVariable Long id, @RequestBody Map<String, Object> params) {
+        String reason = (String) params.get("reason");
+        Double delayedAmount = params.get("delayedAmount") != null ?
+                ((Number) params.get("delayedAmount")).doubleValue() : null;
+        RevenueAllocation result = revenueAllocationService.markDelayed(id, reason, delayedAmount);
+        if (result == null) {
+            return Result.error("收益分配记录不存在");
+        }
+        return Result.success(result);
+    }
+
+    @PutMapping("/{id}/mark-affected")
+    public Result<RevenueAllocation> markAffected(@PathVariable Long id, @RequestBody Map<String, Object> params) {
+        String affectedDates = (String) params.get("affectedDates");
+        Long anomalyId = params.get("anomalyId") != null ?
+                ((Number) params.get("anomalyId")).longValue() : null;
+        RevenueAllocation result = revenueAllocationService.markAffectedDates(id, affectedDates, anomalyId);
+        if (result == null) {
+            return Result.error("收益分配记录不存在");
+        }
+        return Result.success(result);
+    }
+
+    @GetMapping("/by-anomaly/{anomalyId}")
+    public Result<List<RevenueAllocation>> listByAnomalyId(@PathVariable Long anomalyId) {
+        return Result.success(revenueAllocationService.listByAnomalyId(anomalyId));
     }
 }
