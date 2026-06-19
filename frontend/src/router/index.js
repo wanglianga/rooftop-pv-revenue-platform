@@ -104,6 +104,24 @@ const routes = [
         meta: { title: '收益分配管理', icon: 'Money' }
       },
       {
+        path: 'generation-forecast',
+        name: 'GenerationForecast',
+        component: () => import('@/views/GenerationForecastList.vue'),
+        meta: { title: '发电量预测', icon: 'DataAnalysis' }
+      },
+      {
+        path: 'revenue-settlement',
+        name: 'RevenueSettlement',
+        component: () => import('@/views/RevenueSettlementList.vue'),
+        meta: { title: '收益预结算', icon: 'Wallet' }
+      },
+      {
+        path: 'generation-anomaly',
+        name: 'GenerationAnomaly',
+        component: () => import('@/views/GenerationAnomalyList.vue'),
+        meta: { title: '发电异常窗口', icon: 'Warning' }
+      },
+      {
         path: 'owner-notice',
         name: 'OwnerNotice',
         component: () => import('@/views/OwnerNoticeList.vue'),

@@ -59,6 +59,18 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private InverterAnomalyRepository inverterAnomalyRepository;
 
+    @Autowired
+    private GenerationForecastRepository generationForecastRepository;
+
+    @Autowired
+    private RevenueSettlementRepository revenueSettlementRepository;
+
+    @Autowired
+    private GenerationAnomalyRepository generationAnomalyRepository;
+
+    @Autowired
+    private SettlementCorrectionRepository settlementCorrectionRepository;
+
     @Override
     public void run(String... args) {
         if (sysUserRepository.count() == 0) {
@@ -105,6 +117,12 @@ public class DataInitializer implements CommandLineRunner {
         }
         if (inverterAnomalyRepository.count() == 0) {
             initInverterAnomalies();
+        }
+        if (generationForecastRepository.count() == 0) {
+            initGenerationForecasts();
+        }
+        if (revenueSettlementRepository.count() == 0) {
+            initRevenueSettlements();
         }
     }
 
@@ -578,5 +596,164 @@ public class DataInitializer implements CommandLineRunner {
         a3.setCreateBy(1L);
         a3.setCreateTime(now);
         inverterAnomalyRepository.save(a3);
+    }
+
+    private void initGenerationForecasts() {
+        Date now = new Date();
+        String[] weatherTypes = {"SUNNY", "CLOUDY", "RAINY"};
+        double[] weatherFactors = {1.0, 0.65, 0.25};
+        double annualDegradation = 0.008;
+        double degradationFactor = Math.pow(1 - annualDegradation, 90.0 / 365.0);
+
+        double[] capacities = {20.0, 30.0, 25.0, 40.0, 15.0};
+
+        for (int invId = 1; invId <= 5; invId++) {
+            double baseDailyGen = capacities[invId - 1] * 4.5;
+
+            for (int day = 0; day < 7; day++) {
+                Date forecastDate = addDays(now, day + 1);
+                int weatherIdx = (day + invId) % 3;
+                String weatherType = weatherTypes[weatherIdx];
+                double weatherFactor = weatherFactors[weatherIdx];
+
+                double randomFactor = 0.9 + Math.random() * 0.2;
+                double forecastGen = Math.round(baseDailyGen * weatherFactor * degradationFactor * randomFactor * 100.0) / 100.0;
+
+                GenerationForecast forecast = new GenerationForecast();
+                forecast.setInverterId((long) invId);
+                forecast.setForecastDate(forecastDate);
+                forecast.setForecastGeneration(forecastGen);
+                forecast.setWeatherType(weatherType);
+                forecast.setWeatherTempHigh(25.0 + Math.random() * 10);
+                forecast.setWeatherTempLow(15.0 + Math.random() * 5);
+                forecast.setDegradationFactor(Math.round(degradationFactor * 10000.0) / 10000.0);
+                forecast.setHistoricalReference("历史同期日均发电量约" + String.format("%.2f", baseDailyGen) + "kWh");
+                forecast.setIsAnomaly(0);
+                forecast.setCreateTime(now);
+                forecast.setUpdateTime(now);
+                generationForecastRepository.save(forecast);
+            }
+
+            for (int day = 1; day <= 3; day++) {
+                Date forecastDate = addDays(now, -day);
+                int weatherIdx = (day + invId + 1) % 3;
+                String weatherType = weatherTypes[weatherIdx];
+                double weatherFactor = weatherFactors[weatherIdx];
+
+                double baseForecast = baseDailyGen * weatherFactor * degradationFactor;
+                double forecastGen = Math.round(baseForecast * 100.0) / 100.0;
+                double actualGen;
+
+                if (day == 1 && invId == 2) {
+                    actualGen = Math.round(forecastGen * 0.7 * 100.0) / 100.0;
+                } else {
+                    actualGen = Math.round(forecastGen * (0.95 + Math.random() * 0.1) * 100.0) / 100.0;
+                }
+
+                double deviation = forecastGen > 0 ? Math.abs(actualGen - forecastGen) / forecastGen : 0;
+
+                GenerationForecast forecast = new GenerationForecast();
+                forecast.setInverterId((long) invId);
+                forecast.setForecastDate(forecastDate);
+                forecast.setForecastGeneration(forecastGen);
+                forecast.setActualGeneration(actualGen);
+                forecast.setWeatherType(weatherType);
+                forecast.setWeatherTempHigh(25.0 + Math.random() * 10);
+                forecast.setWeatherTempLow(15.0 + Math.random() * 5);
+                forecast.setDegradationFactor(Math.round(degradationFactor * 10000.0) / 10000.0);
+                forecast.setHistoricalReference("历史同期日均发电量约" + String.format("%.2f", baseDailyGen) + "kWh");
+                forecast.setDeviationRate(Math.round(deviation * 10000.0) / 100.0);
+                forecast.setIsAnomaly(deviation > 0.15 ? 1 : 0);
+                forecast.setCreateTime(now);
+                forecast.setUpdateTime(now);
+                generationForecastRepository.save(forecast);
+            }
+        }
+    }
+
+    private void initRevenueSettlements() {
+        Date now = new Date();
+
+        RevenueSettlement s1 = new RevenueSettlement();
+        s1.setSettlementNo("ST" + new java.text.SimpleDateFormat("yyyyMMdd").format(now) + "001");
+        s1.setStartDate(now);
+        s1.setEndDate(addDays(now, 7));
+        s1.setTotalForecastGeneration(4580.50);
+        s1.setTotalActualGeneration(0.0);
+        s1.setUnitPrice(0.512);
+        s1.setSelfUseRatio(0.68);
+        s1.setGridRatio(0.32);
+        s1.setSelfUsePrice(0.56);
+        s1.setGridPrice(0.41);
+        s1.setForecastRevenue(2345.80);
+        s1.setActualRevenue(0.0);
+        s1.setDeviationAmount(0.0);
+        s1.setDeviationRate(0.0);
+        s1.setStatus("DRAFT");
+        s1.setWeatherSummary("晴天、多云");
+        s1.setForecastBasis("1. 基于历史发电曲线数据，参考同期日均发电量；2. 未来天气预测：晴天、多云；3. 组件衰减系数：0.8%/年；4. 电价标准：自用0.56元/度，上网0.41元/度");
+        s1.setCreateBy(1L);
+        s1.setCreateTime(now);
+        s1.setUpdateTime(now);
+        revenueSettlementRepository.save(s1);
+
+        RevenueSettlement s2 = new RevenueSettlement();
+        s2.setSettlementNo("ST" + new java.text.SimpleDateFormat("yyyyMMdd").format(addDays(now, -3)) + "001");
+        s2.setStartDate(addDays(now, -10));
+        s2.setEndDate(addDays(now, -3));
+        s2.setTotalForecastGeneration(4320.80);
+        s2.setTotalActualGeneration(4150.30);
+        s2.setUnitPrice(0.512);
+        s2.setSelfUseRatio(0.68);
+        s2.setGridRatio(0.32);
+        s2.setSelfUsePrice(0.56);
+        s2.setGridPrice(0.41);
+        s2.setForecastRevenue(2211.80);
+        s2.setActualRevenue(2124.95);
+        s2.setDeviationAmount(-86.85);
+        s2.setDeviationRate(-3.93);
+        s2.setStatus("REVIEWED");
+        s2.setWeatherSummary("晴天、多云、雨天");
+        s2.setForecastBasis("1. 基于历史发电曲线数据，参考同期日均发电量；2. 未来天气预测：晴天、多云、雨天；3. 组件衰减系数：0.8%/年；4. 电价标准：自用0.56元/度，上网0.41元/度");
+        s2.setRemark("已审核，收益偏差在正常范围内");
+        s2.setReviewedBy(1L);
+        s2.setReviewTime(now);
+        s2.setCreateBy(1L);
+        s2.setCreateTime(addDays(now, -10));
+        s2.setUpdateTime(now);
+        revenueSettlementRepository.save(s2);
+
+        GenerationAnomaly anomaly = new GenerationAnomaly();
+        anomaly.setAnomalyNo("GA" + new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(now) + "2");
+        anomaly.setInverterId(2L);
+        anomaly.setAnomalyDate(addDays(now, -1));
+        anomaly.setForecastGeneration(135.60);
+        anomaly.setActualGeneration(94.92);
+        anomaly.setDeviationRate(30.0);
+        anomaly.setDeviationAmount(-40.68);
+        anomaly.setStatus("PENDING");
+        anomaly.setCreateBy(1L);
+        anomaly.setCreateTime(now);
+        anomaly.setUpdateTime(now);
+        generationAnomalyRepository.save(anomaly);
+
+        GenerationAnomaly anomaly2 = new GenerationAnomaly();
+        anomaly2.setAnomalyNo("GA" + new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(addDays(now, -2)) + "5");
+        anomaly2.setInverterId(5L);
+        anomaly2.setAnomalyDate(addDays(now, -2));
+        anomaly2.setForecastGeneration(72.50);
+        anomaly2.setActualGeneration(55.10);
+        anomaly2.setDeviationRate(24.0);
+        anomaly2.setDeviationAmount(-17.40);
+        anomaly2.setStatus("RESOLVED");
+        anomaly2.setDeviationReasonCategory("WEATHER_CHANGE");
+        anomaly2.setDeviationReason("天气突变");
+        anomaly2.setDetailDescription("当日突发雷阵雨天气，实际日照时长严重不足，导致发电量大幅低于预期");
+        anomaly2.setHandledBy(1L);
+        anomaly2.setHandleTime(addDays(now, -1));
+        anomaly2.setCreateBy(1L);
+        anomaly2.setCreateTime(addDays(now, -2));
+        anomaly2.setUpdateTime(addDays(now, -1));
+        generationAnomalyRepository.save(anomaly2);
     }
 }

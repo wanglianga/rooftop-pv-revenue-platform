@@ -41,6 +41,18 @@
           <el-icon><Money /></el-icon>
           <span>收益分配管理</span>
         </el-menu-item>
+        <el-menu-item index="/generation-forecast">
+          <el-icon><DataAnalysis /></el-icon>
+          <span>发电量预测</span>
+        </el-menu-item>
+        <el-menu-item index="/revenue-settlement">
+          <el-icon><Wallet /></el-icon>
+          <span>收益预结算</span>
+        </el-menu-item>
+        <el-menu-item index="/generation-anomaly">
+          <el-icon><WarningFilled /></el-icon>
+          <span>发电异常窗口</span>
+        </el-menu-item>
         <el-menu-item index="/owner-notice">
           <el-icon><Bell /></el-icon>
           <span>业主公告管理</span>
